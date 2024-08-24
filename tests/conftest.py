@@ -9,7 +9,9 @@ from auth.dependencies import get_current_user
 import config
 
 # Define the test database engine
-SQLALCHEMY_TEST_DATABASE_URL = f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.TEST_DB_NAME}'
+# SQLALCHEMY_TEST_DATABASE_URL = f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.TEST_DB_NAME}'
+SQLALCHEMY_TEST_DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@localhost:5432/test_db_cyberpunk_inventory'
+
 
 engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
