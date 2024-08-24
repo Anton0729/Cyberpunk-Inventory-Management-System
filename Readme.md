@@ -8,11 +8,10 @@ This project is a Cyberpunk-themed inventory management system built with FastAP
 1. FastAPI with Postgres setup
 2. Docker container with docker-compose
 3. JWT User Authentication
-4. Writing Pytest
+4. Writing Pytest with Coverage
 5. Manage Migrations with Alembic script
 
 ## <ins> Setup Instructions
-## Option 1 (Using Docker)
 
 ### 1. Clone the Repository
 
@@ -41,53 +40,28 @@ docker-compose up
 - ReDoc: http://localhost:8000/redoc
 
 
-### 6. Stop the container
+### 6. Delete the container
 ```bash
 docker-compose down
 ```
+<br>
 
-## Option 2 (Locally Without Docker)
-
-### 1. Clone the Repository
-
-First, clone the repository to your local machine:
-
+### Running Tests:
+To run tests for this project, follow these steps:
+### 1. Ensure the test database is created
+You need to create a test database before running the tests. You can do this using the following command:
 ```bash
-git clone https://github.com/Anton0729/Cyberpunk-Inventory-Management-System.git
+docker-compose exec db psql -U postgres -c "CREATE DATABASE test_db_cyberpunk_inventory;"
 ```
 
-### 2. Install Dependencies
-Navigate to the project directory
+### 2. Run the tests
+Once the test database is set up, you can run the tests using the following command:
 ```bash
-cd Cyberpunk-Inventory-Management-System
+docker-compose run --rm web sh -c "pytest"
 ```
 
-Create a virtual environment and activate it:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-```
-
-Install the required Python packages
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the Application
-Start the FastAPI application using uvicorn:
-```bash
-uvicorn app.main:app --reload --port 8001
-```
-
-
-### To run tests use:
-```bash
-pytest
-```
-
-### Test Coverage:
+### 3. Test Coverage:
 To check the test coverage, follow these steps:
 ```bash
-coverage run -m pytest
-coverage report
+docker-compose run --rm web sh -c "coverage run -m pytest && coverage report"
 ```
