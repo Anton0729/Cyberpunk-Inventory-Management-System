@@ -7,7 +7,6 @@ from .utils import verify_password, get_password_hash, create_access_token
 from .models import TokenData
 from app.models import User
 from app.database import SessionLocal, engine, Base, get_db
-import config
 
 Base.metadata.create_all(bind=engine)
 
@@ -34,7 +33,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+        payload = jwt.decode(token, 'ry5t4hbw9r65h2g6v43132gf2454r23gf6d3542fd6e', algorithms='HS256')
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception

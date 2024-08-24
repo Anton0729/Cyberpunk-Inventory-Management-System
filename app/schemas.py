@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+# Base schema for item data representation
 class ItemBase(BaseModel):
     id: int
     name: str
@@ -11,6 +12,7 @@ class ItemBase(BaseModel):
     price: float
 
 
+# Schema for creating a new item
 class ItemCreate(BaseModel):
     name: str
     description: Optional[str] = None
@@ -19,6 +21,7 @@ class ItemCreate(BaseModel):
     price: float
 
 
+# Schema for updating an existing item
 class ItemUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -40,4 +43,5 @@ class User(UserBase):
     is_active: bool
 
     class Config:
+        # Allows model to use attributes from ORM instances (for SQLAlchemy integration)
         from_attributes = True

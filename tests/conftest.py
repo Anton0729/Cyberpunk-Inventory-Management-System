@@ -9,24 +9,14 @@ from auth.dependencies import get_current_user
 import config
 
 # Define the test database engine
-# SQLALCHEMY_TEST_DATABASE_URL = f'postgresql+psycopg2://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.TEST_DB_NAME}'
 SQLALCHEMY_TEST_DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@localhost:5432/test_db_cyberpunk_inventory'
 
-
+# Create the test database engine
 engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-# Create all tables in the test database
-def create_test_db():
-    Base.metadata.create_all(bind=engine)
-
-
-def drop_test_db():
-    Base.metadata.drop_all(bind=engine)
-
-
-# Dependency override for test database
+# Override for test database
 def override_get_db():
     db = TestingSessionLocal()
     try:
@@ -35,6 +25,7 @@ def override_get_db():
         db.close()
 
 
+# Override the default get_db dependency to use the test database
 app.dependency_overrides[get_db] = override_get_db
 
 
@@ -43,16 +34,23 @@ def override_get_current_user():
     return User(id=1, username="testuser", hashed_password="test123")
 
 
+# Override the default get_current_user dependency for testing
 app.dependency_overrides[get_current_user] = override_get_current_user
 
+# Create a TestClient to send requests to the FastAPI
 client = TestClient(app)
 
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_and_teardown():
+    """
+    Fixture to set up and tear down the test database.
+    """
     # Setup: Clear the test database
-    drop_test_db()
-    create_test_db()
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     yield
     # Teardown: Clear the test database after each test
-    drop_test_db()
+    Base.metadata.drop_all(bind=engine)
+
+

@@ -4,6 +4,12 @@
 
 This project is a Cyberpunk-themed inventory management system built with FastAPI, SQLAlchemy, and PostgreSQL. The system allows users to manage in-game items such as cybernetic enhancements, weapons, and gadgets. It supports full CRUD (Create, Read, Update, Delete) operations and is fully Dockerized for easy setup and deployment.
 
+## Features
+1. FastAPI with Postgres setup
+2. Docker container with docker-compose
+3. JWT User Authentication
+4. Writing Pytest
+5. Manage Migrations with Alembic script
 
 ## <ins> Setup Instructions
 ## Option 1 (Using Docker)
@@ -77,4 +83,11 @@ uvicorn app.main:app --reload --port 8001
 ### To run tests use:
 ```bash
 pytest
+```
+
+### Test Coverage:
+To check the test coverage, follow these steps:
+```bash
+coverage run -m pytest
+coverage report
 ```

@@ -1,4 +1,3 @@
-import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi_pagination import add_pagination, paginate, Page
 from sqlalchemy.orm import Session
@@ -10,24 +9,33 @@ from .schemas import ItemBase, ItemCreate, ItemUpdate, User
 from auth.routes import router as auth_router
 from auth.dependencies import get_current_user
 
+# Initialize FastAPI application
 app = FastAPI(title="Cyberpunk Inventory Management System")
 
-# Auth routers
+# Include authentication routes from the auth module
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 
+# Create database tables if they do not exist
 Base.metadata.create_all(bind=engine)
-
 
 
 @app.get("/items", response_model=Page[ItemBase], status_code=200)
 def read_items(db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """
+    Retrieve a paginated list of items.
+    This endpoint supports pagination and is accessible only to authenticated users.
+    """
     items = db.query(Item).all()
     return paginate(items)
 
 
 @app.get("/items/{item_id}", response_model=ItemBase, status_code=200)
 def read_item(item_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
-    item = db.query(Item).filter(Item.id == item_id).first()
+    """
+    Retrieve a single item by its ID.
+    Returns a 404 error if the item is not found. This endpoint is accessible only to authenticated users.
+    """
+    item = db.query(Item).filter(Item.id == item_id).first()  # Query item by ID
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return item
@@ -35,30 +43,43 @@ def read_item(item_id: int, db: Session = Depends(get_db), current_user: UserMod
 
 @app.post("/item", response_model=ItemBase, status_code=status.HTTP_201_CREATED)
 def create_item(item: ItemCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+    """
+    Create a new item.
+    Checks for existing items with the same name and raises an error if found.
+    This endpoint is accessible only to authenticated users.
+    """
     try:
-        existing_item = db.query(Item).filter(Item.name == item.name).first()
+        existing_item = db.query(Item).filter(Item.name == item.name).first()  # Check for duplicates
         if existing_item:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="An item with this name already exists.")
-        # new_item = Item(**item.dict())
-        new_item = Item(**item.model_dump())
+        new_item = Item(**item.model_dump())  # Create new item
         db.add(new_item)
         db.commit()
         return new_item
 
+    # Rollback in case of an error
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @app.put("/item/{item_id}", response_model=ItemBase, status_code=status.HTTP_200_OK)
-def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
-    db_item = db.query(Item).filter(Item.id == item_id).one_or_none()
+def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db),
+                current_user: UserModel = Depends(get_current_user)):
+    """
+    Update an existing item by its ID.
+    Returns a 404 error if the item is not found.
+    This endpoint is accessible only to authenticated users.
+    """
+    db_item = db.query(Item).filter(Item.id == item_id).one_or_none()  # Query item by ID
     if not db_item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Item not found")
 
+    # Update item attributes, iterate over all attributes
     for var, value in vars(item).items():
+        # Update the corresponding attribute in the db_item if value is not None
         setattr(db_item, var, value) if value else None
 
     try:
@@ -74,7 +95,12 @@ def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db), c
 
 @app.delete("/item/{item_id}", response_model=ItemBase, status_code=status.HTTP_200_OK)
 def delete_item(item_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
-    item = db.query(Item).filter(Item.id == item_id).first()
+    """
+    Delete an item by its ID.
+    Returns a 404 error if the item is not found.
+    This endpoint is accessible only to authenticated users.
+    """
+    item = db.query(Item).filter(Item.id == item_id).first()  # Query item by ID
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
 
@@ -83,8 +109,5 @@ def delete_item(item_id: int, db: Session = Depends(get_db), current_user: UserM
     return item
 
 
-
+# Add pagination support to the application
 add_pagination(app)
-
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8081, reload=True)
