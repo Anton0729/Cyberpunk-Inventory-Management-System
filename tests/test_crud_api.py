@@ -147,3 +147,16 @@ def test_delete_nonexistent_item():
     response = client.delete(f"/item/9999")
     assert response.status_code == 404
     assert response.json() == {"detail": "Item not found"}
+
+
+def test_signup_successful():
+    """
+    Test case for user signup.
+    """
+    user_data = {
+        "username": "testuser",
+        "password": "testpassword"
+    }
+    response = client.post("/auth/signup", json=user_data)
+    assert response.status_code == 200
+    assert response.json()["username"] == user_data["username"]
