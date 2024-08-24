@@ -12,5 +12,9 @@ This project is a Cyberpunk-themed inventory management system built with FastAP
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/repositoryname.git
-cd repositoryname
+git clone https://github.com/Anton0729/Cyberpunk-Inventory-Management-System.git
+```
+
+### 2. Run Docker Desktop
+
+### 3. Run Docker Desktop
