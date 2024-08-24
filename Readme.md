@@ -4,9 +4,7 @@
 
 This project is a Cyberpunk-themed inventory management system built with FastAPI, SQLAlchemy, and PostgreSQL. The system allows users to manage in-game items such as cybernetic enhancements, weapons, and gadgets. It supports full CRUD (Create, Read, Update, Delete) operations and is fully Dockerized for easy setup and deployment.
 
-API Documentation
-https://docs.google.com/document/d/1mFH4yAI1E3IzMou-yT8c5PPu1uHhQ_gV/edit?usp=sharing&ouid=110472722426617783568&rtpof=true&sd=true
-[link](doc:[linking-to-pages#anchor-links](https://docs.google.com/document/d/1mFH4yAI1E3IzMou-yT8c5PPu1uHhQ_gV/edit?usp=sharing&ouid=110472722426617783568&rtpof=true&sd=true))
+API Documentation https://docs.google.com/document/d/1mFH4yAI1E3IzMou-yT8c5PPu1uHhQ_gV/edit?usp=sharing&ouid=110472722426617783568&rtpof=true&sd=true
 
 
 ## Features
