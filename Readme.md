@@ -22,6 +22,7 @@ First, clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/Anton0729/Cyberpunk-Inventory-Management-System.git
+cd .\TestTaskInventoryManagementSystem\
 ```
 
 ### 2. Run Docker Desktop
