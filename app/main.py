@@ -140,5 +140,6 @@ def delete_item(
     return item
 
 
+
 # Add pagination support to the application
 add_pagination(app)
