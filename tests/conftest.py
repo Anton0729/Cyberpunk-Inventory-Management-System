@@ -2,14 +2,16 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.main import app
+
 from app.database import Base, get_db
+from app.main import app
 from app.models import User
 from auth.dependencies import get_current_user
-import config
 
 # Define the test database engine
-SQLALCHEMY_TEST_DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@db:5432/test_db_cyberpunk_inventory'
+SQLALCHEMY_TEST_DATABASE_URL = (
+    "postgresql+psycopg2://postgres:postgres@db:5432/test_db_cyberpunk_inventory"
+)
 
 # Create the test database engine
 engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL)
@@ -34,6 +36,8 @@ Using a mock for authentication in tests simplifies and speeds up testing by byp
 It isolates tests from the authentication system. Mocks provide predictable responses, allowing you to focus on 
 testing specific application logic without the complexities of actual authentication mechanisms.
 """
+
+
 # Mock the get_current_user dependency to always return a test user
 def override_get_current_user():
     return User(id=1, username="testuser", hashed_password="test123")
@@ -57,5 +61,3 @@ def setup_and_teardown():
     yield
     # Teardown: Clear the test database after each test
     Base.metadata.drop_all(bind=engine)
-
-

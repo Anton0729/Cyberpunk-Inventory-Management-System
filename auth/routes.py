@@ -1,17 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from .dependencies import get_db, authenticate_user, create_access_token, get_user
+
+from app.models import User
+
+from .dependencies import authenticate_user, create_access_token, get_db, get_user
 from .models import Token
 from .schemas import UserCreate, UserResponse
-from app.models import User
 from .utils import get_password_hash  # Import get_password_hash here
 
 router = APIRouter()
 
 
 @router.post("/token", response_model=Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     """
     Endpoint to authenticate a user and return an access token.
     """

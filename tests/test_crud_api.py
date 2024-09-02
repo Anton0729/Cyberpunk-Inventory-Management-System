@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
@@ -13,7 +14,7 @@ def test_create_item():
         "description": "A test item",
         "category": "GADGET",
         "quantity": 10,
-        "price": 99.99
+        "price": 99.99,
     }
     response = client.post("/item", json=item_data)
     assert response.status_code == 201
@@ -22,15 +23,15 @@ def test_create_item():
 
 def test_read_items():
     """
-   Test case for reading the list of items.
-   """
+    Test case for reading the list of items.
+    """
     # First, create an item to ensure there's something to read
     item_data = {
         "name": "Test Item",
         "description": "A test item",
         "category": "GADGET",
         "quantity": 10,
-        "price": 99.99
+        "price": 99.99,
     }
     client.post("/item", json=item_data)
 
@@ -50,7 +51,7 @@ def test_read_item():
         "description": "A test item",
         "category": "GADGET",
         "quantity": 10,
-        "price": 99.99
+        "price": 99.99,
     }
     post_response = client.post("/item", json=item_data)
     item_id = post_response.json()["id"]
@@ -80,7 +81,7 @@ def test_update_item():
         "description": "A test item",
         "category": "GADGET",
         "quantity": 10,
-        "price": 99.99
+        "price": 99.99,
     }
     post_response = client.post("/item", json=item_data)
     item_id = post_response.json()["id"]
@@ -91,7 +92,7 @@ def test_update_item():
         "description": "An updated test item",
         "category": "GADGET",
         "quantity": 20,
-        "price": 199.99
+        "price": 199.99,
     }
     response = client.put(f"/item/{item_id}", json=update_data)
     assert response.status_code == 200
@@ -108,10 +109,12 @@ def test_update_nonexistent_item():
         "description": "Updated description",
         "category": "GADGET",
         "quantity": 20,
-        "price": 199.99
+        "price": 199.99,
     }
 
-    response = client.put("/item/9999", json=update_data)  # Assuming 9999 is an ID that does not exist
+    response = client.put(
+        "/item/9999", json=update_data
+    )  # Assuming 9999 is an ID that does not exist
     assert response.status_code == 404
     assert response.json() == {"detail": "Item not found"}
 
@@ -126,7 +129,7 @@ def test_delete_item():
         "description": "A test item",
         "category": "GADGET",
         "quantity": 10,
-        "price": 99.99
+        "price": 99.99,
     }
     post_response = client.post("/item", json=item_data)
     item_id = post_response.json()["id"]
@@ -144,7 +147,7 @@ def test_delete_nonexistent_item():
     """
     Test case for deleting an item that does not exist.
     """
-    response = client.delete(f"/item/9999")
+    response = client.delete("/item/9999")
     assert response.status_code == 404
     assert response.json() == {"detail": "Item not found"}
 
@@ -153,10 +156,7 @@ def test_signup_successful():
     """
     Test case for user signup.
     """
-    user_data = {
-        "username": "testuser",
-        "password": "testpassword"
-    }
+    user_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/auth/signup", json=user_data)
     assert response.status_code == 200
     assert response.json()["username"] == user_data["username"]
