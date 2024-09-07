@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from auth.dependencies import get_current_user
 from auth.routes import router as auth_router
 
-from .database import engine, get_db
+from .database import engine
+from .dependencies import get_db
 from .models import Base, Item
 from .models import User as UserModel
 from .schemas import ItemBase, ItemCreate, ItemUpdate
